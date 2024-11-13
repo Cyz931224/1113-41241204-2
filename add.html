@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google 認證示範</title>
+    <script type="module">
+        // 引入 Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        // Firebase 配置
+        const firebaseConfig = {
+            apiKey: "AIzaSyDgJBbg13TmCB-Lak_tAKvTdC0duV53dH4",
+            authDomain: "test1-22e08.firebaseapp.com",
+            projectId: "test1-22e08",
+            storageBucket: "test1-22e08.firebasestorage.app",
+            messagingSenderId: "580024216609",
+            appId: "1:580024216609:web:066fd996ea68919dfe8760",
+            measurementId: "G-8TPBZTG3T4"
+        };
+
+        // 初始化 Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // 登錄函數
+        async function signIn() {
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                document.getElementById('userInfo').textContent = `登錄成功: ${user.displayName}`;
+                document.getElementById('signInButton').style.display = 'none'; // 隱藏登錄按鈕
+                document.getElementById('signOutButton').style.display = 'block'; // 顯示登出按鈕
+            } catch (error) {
+                console.error("登錄失敗: ", error);
+                document.getElementById('userInfo').textContent = "登錄失敗: " + error.message;
+            }
+        }
+
+        // 登出函數
+        async function signOutUser() {
+            try {
+                await signOut(auth);
+                document.getElementById('userInfo').textContent = "已登出";
+                document.getElementById('signInButton').style.display = 'block'; // 顯示登錄按鈕
+                document.getElementById('signOutButton').style.display = 'none'; // 隱藏登出按鈕
+            } catch (error) {
+                console.error("登出失敗: ", error);
+            }
+        }
+
+        // 等待 DOM 加載完成後設置事件
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('signInButton').addEventListener('click', signIn);
+            document.getElementById('signOutButton').addEventListener('click', signOutUser);
+        });
+    </script>
+</head>
+<body>
+    <h1>Google 認證示範</h1>
+    <button id="signInButton">使用 Google 登錄</button>
+    <button id="signOutButton" style="display: none;">登出</button>
+    <div id="userInfo" style="margin-top: 20px;"></div>
+</body>
+</html>
